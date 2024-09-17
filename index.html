@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>T-shirt Customizer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f7f7f7;
+        }
+
+        #container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 1200px;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        #canvasContainer {
+            position: relative;
+            width: 100%;
+            max-width: 700px;
+            margin-bottom: 20px;
+        }
+
+        #mainCanvas {
+            width: 100%;
+            height: auto;
+        }
+
+        #controls {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 300px;
+        }
+
+        #colorPicker, #logoPicker {
+            text-align: center;
+            margin-top: 20px;
+            width: 100%;
+        }
+
+        #colorList {
+            list-style: none;
+            padding: 0;
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+            position: relative;
+        }
+
+        .colorOption {
+            cursor: pointer;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            border: 5px solid #ffffff;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .customColorButton {
+            cursor: pointer;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            border: 5px solid #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #fefefe;
+            color: #ffffff;
+            font-size: 20px;
+            font-weight: bold;
+            line-height: 1;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+        }
+
+        #customColorInput {
+            margin-top: 0px;
+            position: absolute;
+            scale: 0; /* Hide the input element */
+        }
+
+        #logoList {
+            list-style: none;
+            padding: 0;
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .logoOption {
+            cursor: pointer;
+            width: 50px;
+            height: 50px;
+            border: 5px solid #ffffff;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .customLogoButton {
+            cursor: pointer;
+            width: 50px;
+            height: 50px;
+            border: 5px solid #ffffff;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background-color: #ffffff;
+            color: #000;
+            font-size: 24px;
+            font-weight: bold;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .logoOption img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        #saveButton {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #2D5348;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+        }
+
+        @media (min-width: 768px) {
+            #container {
+                flex-direction: row;
+                justify-content: space-between;
+            }
+
+            #canvasContainer {
+                width: 60%;
+                margin-right: 20px;
+                margin-bottom: 0;
+            }
+
+            #controls {
+                width: 35%;
+            }
+        }
+    </style>
+</head>
+<body >
+<h1> Customize your t-shirt</h1>
+<div id="container">
+    <div id="canvasContainer">
+        <!-- The canvas element where the T-shirt will be drawn -->
+        <canvas id="mainCanvas" width="700" height="500"></canvas>
+    </div>
+
+    <div id="controls">
+        <div id="colorPicker">
+            <h2>Select a color:</h2>
+            <ul id="colorList" class="swatches">
+                <!-- List of predefined color options -->
+                <li class="colorOption" data-color="ffffff" style="background-color: #ffffff;"></li>
+                <li class="colorOption" data-color="47E8D2" style="background-color: #47E8D2;"></li>
+                <li class="colorOption" data-color="DCA381" style="background-color: #DCA381;"></li>
+                <li class="colorOption" data-color="702C3C" style="background-color: #702C3C;"></li>
+                <li class="colorOption" data-color="E9C660" style="background-color: #E9C660;"></li>
+                <li class="colorOption" data-color="A11D1F" style="background-color: #A11D1F;"></li>
+                <li class="colorOption" data-color="897115" style="background-color: #897115;"></li>
+                <li class="colorOption" data-color="598DE6" style="background-color: #598DE6;"></li>
+                <!-- Button for custom color input -->
+                <li class="customColorButton" id="customColorPicker">
+                    <svg width="30px" height="30px" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" fill="#676565" stroke="#676565"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><path fill="#757575" d="M480 480V128a32 32 0 0 1 64 0v352h352a32 32 0 1 1 0 64H544v352a32 32 0 1 1-64 0V544H128a32 32 0 0 1 0-64h352z"></path></g></svg>
+                </li>
+            </ul>
+            <!-- Hidden color input for custom color -->
+            <input type="color" id="customColorInput" value="#ffffff">
+        </div>
+
+        <div id="logoPicker">
+            <h2>Select a logo:</h2>
+            <ul id="logoList">
+                <!-- List of predefined logo options -->
+                <li class="logoOption" data-logo-src="logo1.png"><img src="logo1.png" alt="Logo 1"></li>
+                <li class="logoOption" data-logo-src="logo2.png"><img src="logo2.png" alt="Logo 2"></li>
+                <li class="logoOption" data-logo-src="logo3.png"><img src="logo3.png" alt="Logo 2"></li>
+                <!-- Button for custom logo input -->
+                <li class="customLogoButton" id="customLogoPicker">
+                    <svg width="30px" height="30px" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" fill="#676565" stroke="#676565"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><path fill="#757575" d="M480 480V128a32 32 0 0 1 64 0v352h352a32 32 0 1 1 0 64H544v352a32 32 0 1 1-64 0V544H128a32 32 0 0 1 0-64h352z"></path></g></svg>
+                </li>
+            </ul>
+            <!-- Hidden file input for custom logo -->
+            <input type="file" id="logoFileInput" style="display: none;">
+        </div>
+
+        <!-- Button to save the customized T-shirt as an image -->
+        <button id="saveButton">Save Image</button>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const canvas = document.getElementById('mainCanvas');
+    const ctx = canvas.getContext('2d');
+    const img = new Image();
+    img.src = 'tshirt.png'; // Path to the T-shirt image
+
+    let imageData;
+    let logo = null;
+    let currentColor = 'ffffff'; // Default to white
+
+    // Load the T-shirt image and draw it on the canvas
+    img.onload = function() {
+        drawBag(); // Draw the T-shirt after the image has loaded
+    };
+
+    // Function to draw the T-shirt and apply selected color and logo
+    function drawBag() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height); // Draw the T-shirt image
+
+        imageData = ctx.getImageData(0, 0, canvas.width, canvas.height); // Get image data for editing
+        applyColorToBag(currentColor); // Apply selected color to the T-shirt
+        if (logo) {
+            drawLogo(logo.src); // Draw the logo if selected
+        }
+    }
+
+    // Function to apply selected color to the T-shirt
+    function applyColorToBag(hexColor) {
+        const rgbColor = hexToRgb(hexColor);
+        const data = imageData.data;
+
+        // Adjust opacity based on the darkness of the selected color
+        let colorOpacity = 0.4; // Default opacity
+        const averageBrightness = (rgbColor.r + rgbColor.g + rgbColor.b) / 3;
+
+        if (averageBrightness < 128) { // If the color is dark, increase opacity
+            colorOpacity = 0.8;
+        }
+
+        for (let i = 0; i < data.length; i += 4) {
+            const r = data[i];
+            const g = data[i + 1];
+            const b = data[i + 2];
+
+            // Check if the pixel color is close to specific gray colors or dark colors
+            if (isCloseToColor(r, g, b, 240, 240, 240, 20) || // White
+                isCloseToColor(r, g, b, 218, 218, 218, 20) || // Light gray
+                isCloseToColor(r, g, b, 184, 184, 184, 20) || // Gray
+                isCloseToColor(r, g, b, 132, 132, 132, 20) || // Dark gray
+                isCloseToColor(r, g, b, 107, 107, 107, 20) || // #6B6B6B
+                isCloseToColor(r, g, b, 135, 135, 135, 20) || // #878787
+                isCloseToColor(r, g, b, 159, 159, 159, 20) || // #9F9F9F
+                isCloseToColor(r, g, b, 104, 128, 121, 20) || // #688079
+                isCloseToColor(r, g, b, 150, 157, 155, 20) || // #969D9B
+                isCloseToColor(r, g, b, 175, 182, 180, 20) || // #AFB6B4
+                isCloseToColor(r, g, b, 185, 194, 192, 20) || // #B9C2C0
+                isCloseToColor(r, g, b, 76, 106, 98, 20) || // #4C6A62
+                (averageBrightness < 128 && (isCloseToColor(r, g, b, 84, 84, 84, 20)))) { // Specific dark gray for darker colors
+                // Apply color with dynamic opacity
+                data[i] = Math.round(r * (1 - colorOpacity) + rgbColor.r * colorOpacity);
+                data[i + 1] = Math.round(g * (1 - colorOpacity) + rgbColor.g * colorOpacity);
+                data[i + 2] = Math.round(b * (1 - colorOpacity) + rgbColor.b * colorOpacity);
+            }
+        }
+        ctx.putImageData(imageData, 0, 0); // Update canvas with new image data
+    }
+
+    // Function to convert hex color to RGB
+    function hexToRgb(hex) {
+        const bigint = parseInt(hex, 16);
+        const r = (bigint >> 16) & 255;
+        const g = (bigint >> 8) & 255;
+        const b = bigint & 255;
+        return { r, g, b };
+    }
+
+    // Function to check if a color is close to a target color within a certain threshold
+    function isCloseToColor(r, g, b, targetR, targetG, targetB, threshold) {
+        return Math.abs(r - targetR) < threshold && Math.abs(g - targetG) < threshold && Math.abs(b - targetB) < threshold;
+    }
+
+    // Listener for color selection
+    document.querySelectorAll('.colorOption').forEach(function(element) {
+        element.addEventListener('click', function() {
+            currentColor = this.getAttribute('data-color'); // Get the selected color
+            drawBag(); // Redraw the T-shirt with the new color
+        });
+    });
+
+    // Listener for custom color picker
+    document.getElementById('customColorPicker').addEventListener('click', function() {
+        document.getElementById('customColorInput').click(); // Trigger click on the color input
+    });
+
+    // Listener for custom color change
+    document.getElementById('customColorInput').addEventListener('input', function() {
+        currentColor = this.value.slice(1); // Get the selected color without the #
+        drawBag(); // Redraw the T-shirt with the new color
+    });
+
+    // Listener for logo selection
+    document.querySelectorAll('.logoOption').forEach(function(element) {
+        element.addEventListener('click', function() {
+            const logoSrc = this.getAttribute('data-logo-src');
+            logo = new Image();
+            logo.src = logoSrc;
+            drawBag(); // Redraw the T-shirt with the new logo
+        });
+    });
+
+    // Listener for custom logo picker
+    document.getElementById('customLogoPicker').addEventListener('click', function() {
+        document.getElementById('logoFileInput').click(); // Trigger click on the file input
+    });
+
+    // Listener for custom logo change
+    document.getElementById('logoFileInput').addEventListener('change', function() {
+        const file = this.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                logo = new Image();
+                logo.src = e.target.result;
+                drawBag(); // Redraw the T-shirt with the new logo
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    // Function to draw the selected logo on the T-shirt
+    function drawLogo(logoSrc) {
+        const logoImg = new Image();
+        logoImg.src = logoSrc;
+        logoImg.onload = function() {
+            const logoSize = 100; // Restore the logo size to the previous value
+            ctx.drawImage(logoImg, canvas.width / 2 - logoSize / 2, canvas.height / 2 - logoSize / 2, logoSize, logoSize);
+        };
+    }
+
+    // Listener for the save button
+    document.getElementById('saveButton').addEventListener('click', function() {
+        const link = document.createElement('a');
+        link.download = 'custom_tshirt.png'; // Name the file for download
+        link.href = canvas.toDataURL('image/png'); // Convert canvas content to data URL
+        link.click(); // Trigger the download
+    });
+});
+
+</script>
+</body>
+</html>
